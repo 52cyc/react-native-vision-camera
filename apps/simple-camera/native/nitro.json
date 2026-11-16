@@ -1,0 +1,30 @@
+{
+  "$schema": "https://nitro.margelo.com/nitro.schema.json",
+  "cxxNamespace": [
+    "snapport"
+  ],
+  "ios": {
+    "iosModuleName": "SnapPortNative"
+  },
+  "android": {
+    "androidNamespace": [
+      "snapport"
+    ],
+    "androidCxxLibName": "SnapPortNative"
+  },
+  "autolinking": {
+    "SnapPortBridge": {
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridSnapPortBridge"
+      },
+      "android": {
+        "language": "kotlin",
+        "implementationClassName": "HybridSnapPortBridge"
+      }
+    }
+  },
+  "ignorePaths": [
+    "**/node_modules"
+  ]
+}

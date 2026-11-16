@@ -4,10 +4,12 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>CFBundleLocalizations</key>
+	<array><string>en</string><string>zh-Hans</string></array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>SimpleCamera</string>
+	<string>SnapPort</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -33,12 +35,14 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>SnapPort connects to your WebDAV server or NAS on the local network.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>VisionCamera needs access to your Camera for very obvious reasons.</string>
+	<string>SnapPort uses the camera to capture photos for your cloud storage.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>VisionCamera needs access to your Microphone to record audio for video recordings.</string>
+	<string>SnapPort uses the microphone only when recording video.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>VisionCamera needs access to your Location to add GPS tags to captured photos.</string>
+	<string>SnapPort adds GPS tags to photos only when you enable location metadata.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UIAppFonts</key>

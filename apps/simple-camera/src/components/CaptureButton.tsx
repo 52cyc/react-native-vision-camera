@@ -11,6 +11,8 @@ import Animated, {
 import { BlurContainer } from './BlurContainer'
 
 export interface CaptureButtonProps {
+  disabled?: boolean
+  mode?: 'photo' | 'video'
   takePhoto: () => Promise<void>
   startRecording: () => Promise<void>
   stopRecording: () => Promise<void>
@@ -20,6 +22,8 @@ const AnimatedBlurContainer = Animated.createAnimatedComponent(BlurContainer)
 const LONG_PRESS_DURATION_MS = 300
 
 export function CaptureButton({
+  disabled = false,
+  mode = 'photo',
   takePhoto,
   startRecording,
   stopRecording,
@@ -47,6 +51,7 @@ export function CaptureButton({
   })
 
   const tapGesture = Gesture.Tap()
+    .enabled(!disabled && mode === 'photo')
     .maxDuration(LONG_PRESS_DURATION_MS)
     .maxDistance(20)
     .onBegin(() => {
@@ -112,6 +117,7 @@ export function CaptureButton({
   }, [stopRecordingNow])
 
   const longPressGesture = Gesture.LongPress()
+    .enabled(!disabled && mode === 'video')
     .minDuration(LONG_PRESS_DURATION_MS)
     .maxDistance(50)
     .shouldCancelWhenOutside(false)
@@ -143,7 +149,18 @@ export function CaptureButton({
   return (
     <GestureDetector gesture={captureGesture}>
       <AnimatedBlurContainer
-        style={[styles.circle, styles.outer, outerStyle]}
+        accessible
+        accessibilityRole="button"
+        accessibilityLabel={
+          mode === 'photo' ? 'SnapPort shutter' : 'SnapPort record video'
+        }
+        accessibilityState={{ disabled }}
+        style={[
+          styles.circle,
+          styles.outer,
+          outerStyle,
+          { opacity: disabled ? 0.4 : 1 },
+        ]}
         tint="light"
       >
         <AnimatedBlurContainer

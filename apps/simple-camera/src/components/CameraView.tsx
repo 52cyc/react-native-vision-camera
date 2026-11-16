@@ -8,10 +8,15 @@ import {
 
 type Props = Omit<
   CameraViewProps,
-  'ref' | 'style' | 'enableNativeZoomGesture' | 'enableNativeTapToFocusGesture'
+  'ref' | 'style' | 'enableNativeTapToFocusGesture'
 >
 
-export function CameraView({ device, constraints, ...props }: Props) {
+export function CameraView({
+  device,
+  constraints,
+  onSessionConfigSelected,
+  ...props
+}: Props) {
   const camera = useRef<CameraRef>(null)
 
   useEffect(() => {
@@ -37,7 +42,7 @@ export function CameraView({ device, constraints, ...props }: Props) {
   }, [device])
 
   const onPress = useCallback(async (event: GestureResponderEvent) => {
-    if (camera.current == null) throw new Error(`Camera ref is not yet ready!`)
+    if (camera.current?.controller == null) return
 
     const point = {
       x: event.nativeEvent.locationX,
@@ -67,11 +72,13 @@ export function CameraView({ device, constraints, ...props }: Props) {
         style={styles.camera}
         device={device}
         constraints={constraints}
+        enableNativeZoomGesture={true}
         onSubjectAreaChanged={() => {
           console.log(`Subject Area Changed! Resetting Focus...`)
           camera.current?.resetFocus()
         }}
         onSessionConfigSelected={(config) => {
+          onSessionConfigSelected?.(config)
           console.log(`Given Constraints:`, constraints)
           console.log(`Resolved SessionConfig:`, config.toString())
         }}

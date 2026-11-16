@@ -12,7 +12,11 @@
     "build:android": "cd android && ./gradlew assembleDebug --no-daemon --console=plain",
     "test:harness": "react-native-harness",
     "test:harness:android": "react-native-harness --harnessRunner android",
-    "test:harness:ios": "HARNESS_METRO_BIND_HOST=:: react-native-harness --harnessRunner ios"
+    "test:harness:ios": "HARNESS_METRO_BIND_HOST=:: react-native-harness --harnessRunner ios",
+    "typecheck": "tsc --noEmit",
+    "test:snapport": "bun test snapport-tests",
+    "native:specs": "cd native && bun run specs",
+    "typecheck:snapport-tests": "tsc -p tsconfig.snapport-tests.json"
   },
   "dependencies": {
     "@react-native-community/blur": "^4.4.1",
@@ -38,7 +42,10 @@
     "react-native-vision-camera-resizer": "../../packages/react-native-vision-camera-resizer",
     "react-native-vision-camera-skia": "../../packages/react-native-vision-camera-skia",
     "react-native-vision-camera-worklets": "../../packages/react-native-vision-camera-worklets",
-    "react-native-worklets": "0.9.1"
+    "react-native-worklets": "0.9.1",
+    "snapport-native": "workspace:*",
+    "fast-xml-parser": "5.3.6",
+    "react-native-url-polyfill": "3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",

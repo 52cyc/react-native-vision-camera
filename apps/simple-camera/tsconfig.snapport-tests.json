@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["bun"],
+    "noEmit": true
+  },
+  "include": ["snapport-tests/**/*.ts"],
+  "exclude": ["node_modules", "native", "__tests__"]
+}

@@ -1,3 +1,22 @@
+# SnapPort
+
+This branch adds **SnapPort**, an Android/iOS cloud camera built on VisionCamera V5.
+The app lives in `apps/simple-camera`. Photos are captured as encoded JPEG bytes in
+memory and sent to a configured HTTPS WebDAV server through an app-local native
+transport. Pending photos are never persisted and are lost when the process exits.
+Video is an explicitly enabled, separate mode that uses local temporary files.
+
+**Validation status:** TypeScript, protocol/queue tests and both Metro bundles have
+been checked. Android/iOS native builds and physical-device capture/upload still
+require verification; this branch is not a verified production release.
+
+- [Architecture and memory guarantees](docs/SNAPPORT_ARCHITECTURE.md)
+- [Setup, WebDAV configuration, tests and device validation](docs/SNAPPORT_DEVELOPMENT.md)
+
+The upstream project, attribution and MIT license are retained below.
+
+---
+
 <a href="https://visioncamera.margelo.com">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="./images/banner-dark.webp" />
