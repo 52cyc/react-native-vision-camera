@@ -73,3 +73,66 @@ index 1c179458..67ad0666 100644
  }
  
  - (void)startWithBundleManager:(RCTBundleManager *)bundleManager
+diff --git a/scripts/cocoapods/rncore.rb b/scripts/cocoapods/rncore.rb
+--- a/scripts/cocoapods/rncore.rb
++++ b/scripts/cocoapods/rncore.rb
+@@ -160,7 +160,7 @@
+         rncore_log("  #{Pathname.new(destinationDebug).relative_path_from(Pathname.pwd).to_s}")
+         rncore_log("  #{Pathname.new(destinationRelease).relative_path_from(Pathname.pwd).to_s}")
+ 
+-        return {:http => URI::File.build(path: destinationDebug).to_s }
++        return {:http => URI::File.build(path: URI::DEFAULT_PARSER.escape(destinationDebug, /[^#{URI::PATTERN::UNRESERVED}\/]/)).to_s }
+     end
+ 
+     def self.podspec_source_download_prebuilt_nightly_tarball()
+@@ -196,7 +196,7 @@
+         rncore_log("Resolved nightly ReactNativeCore-prebuilt version:")
+         rncore_log("  #{Pathname.new(destinationDebug).relative_path_from(Pathname.pwd).to_s}")
+         rncore_log("  #{Pathname.new(destinationRelease).relative_path_from(Pathname.pwd).to_s}")
+-        return {:http => URI::File.build(path: destinationDebug).to_s }
++        return {:http => URI::File.build(path: URI::DEFAULT_PARSER.escape(destinationDebug, /[^#{URI::PATTERN::UNRESERVED}\/]/)).to_s }
+     end
+ 
+     def self.process_dsyms(frameworkTarball, dSymsTarball)
+diff --git a/scripts/cocoapods/rndependencies.rb b/scripts/cocoapods/rndependencies.rb
+--- a/scripts/cocoapods/rndependencies.rb
++++ b/scripts/cocoapods/rndependencies.rb
+@@ -161,7 +161,7 @@
+         destinationDebug = download_stable_rndeps(@@react_native_path, @@react_native_version, :debug)
+         download_stable_rndeps(@@react_native_path, @@react_native_version, :release)
+ 
+-        return {:http => URI::File.build(path: destinationDebug).to_s }
++        return {:http => URI::File.build(path: URI::DEFAULT_PARSER.escape(destinationDebug, /[^#{URI::PATTERN::UNRESERVED}\/]/)).to_s }
+     end
+ 
+     def self.release_tarball_url(version, build_type)
+@@ -228,7 +228,7 @@
+         destinationDebug = download_nightly_rndeps(@@react_native_path, @@react_native_version, :debug)
+         download_nightly_rndeps(@@react_native_path, @@react_native_version, :release)
+ 
+-        return {:http => URI::File.build(path: destinationDebug).to_s }
++        return {:http => URI::File.build(path: URI::DEFAULT_PARSER.escape(destinationDebug, /[^#{URI::PATTERN::UNRESERVED}\/]/)).to_s }
+         return {:http => url}
+     end
+ 
+diff --git a/sdks/hermes-engine/hermes-engine.podspec b/sdks/hermes-engine/hermes-engine.podspec
+--- a/sdks/hermes-engine/hermes-engine.podspec
++++ b/sdks/hermes-engine/hermes-engine.podspec
+@@ -11,7 +11,7 @@
+     'require.resolve(
+     "react-native",
+     {paths: [process.argv[1]]},
+-    )', __dir__]).strip
++    )', __dir__]).strip.force_encoding(Encoding::UTF_8)
+   )
+ rescue => e
+   # Fallback to the parent directory if the above command fails (e.g when building locally in OOT Platform)
+@@ -89,7 +89,7 @@
+     # In other cases, when using Hermes V1, the prebuilt versioned binaries can be used.
+     if source_type != HermesEngineSourceType::LOCAL_PREBUILT_TARBALL
+       hermes_compiler_path = File.dirname(Pod::Executable.execute_command('node', ['-p',
+-        "require.resolve(\"hermes-compiler\", {paths: [\"#{react_native_path}\"]})", __dir__]).strip
++        "require.resolve(\"hermes-compiler\", {paths: [\"#{react_native_path}\"]})", __dir__]).strip.force_encoding(Encoding::UTF_8)
+       )
+ 
+       spec.user_target_xcconfig = {

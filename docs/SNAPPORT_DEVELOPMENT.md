@@ -1,7 +1,7 @@
 # 开发和验证 SnapPort
 
 当前在 `SnapPort-Camera` 分支开发，基于 VisionCamera 5.2.4，业务代码在 `apps/simple-camera`。
-**尚未产出通过验证的 APK／iPhone 安装包，也未连接真实 WebDAV。** 已完成 TypeScript、协议与队列测试及 Android／iOS JavaScript 打包，详情见下文。
+**2026-11-17 已完成 iOS 真机编译、安装与启动，用户确认看到 SnapPort 界面。** Android 安装包、真实拍照上传与真实 WebDAV 尚未完成验证。TypeScript、协议与队列测试及两个平台的 JavaScript 打包结果见下文。
 
 ## 准备环境
 
@@ -54,13 +54,14 @@ cd apps/simple-camera/android
 
 ## iPhone 真机运行
 
-先在已配置符合要求的 Ruby／Bundler 环境中执行：
+本机使用 Homebrew 的 Ruby 3.4（不修改系统 Ruby）。在仓库根目录执行：
 
 ```sh
+export PATH="/opt/homebrew/opt/ruby@3.4/bin:/opt/homebrew/lib/ruby/gems/3.4.0/bin:$PATH"
 cd apps/simple-camera
 bundle install
 cd ios
-bundle exec pod install
+ENTERPRISE_REPOSITORY=https://repo.maven.apache.org/maven2 bundle exec pod install
 ```
 
 随后打开 `apps/simple-camera/ios/SimpleCamera.xcworkspace`，选择 `SimpleCamera` scheme 和已连接 iPhone，在 Signing 中配置自己的开发团队与可用 Bundle Identifier。界面名称为 SnapPort，工程名／模块注册名暂时沿用 SimpleCamera，以降低改造范围。
@@ -76,7 +77,7 @@ xcodebuild -workspace ios/SimpleCamera.xcworkspace -scheme SimpleCamera \
   -derivedDataPath /tmp/snapport-ios-build CODE_SIGNING_ALLOWED=NO build
 ```
 
-若 `pod install` 报 RN 最低 iOS 版本冲突，应先核实依赖要求并统一 Podfile 和 Xcode deployment target；本次 Pods 尚未安装，未编造通过结果。
+本机已安装 Pods。Podfile 将低于 15.5 的依赖部署目标统一至 15.5；RN 补丁处理中文目录的文件 URL 与 Hermes 路径编码。iOS 启动入口使用 SceneDelegate，兼容当前手机的 iOS 27。开发者模式和首次开发证书信任需在 iPhone 上确认。
 
 ## 配置真实 WebDAV
 
@@ -150,6 +151,15 @@ bunx --no-install react-native bundle --platform ios --dev false \
 
 开始时示例直接运行 tsc 曾因 SDK 的 `lib/` 尚未生成而找不到本地包；运行仓库现有 `bun run build` 后解决。原始示例声明了 READ／WRITE_EXTERNAL_STORAGE 并主动申请 GPS；照片不需要这些文件权限，已移除；GPS 改为显式设置开启后才挂载定位监听。
 
+## iPhone 启动验证（2026-11-17）
+
+- 使用 Xcode 27.2、Ruby 3.4.12 和已安装的 Pods 构建 Debug 版本；签名校验通过。
+- 已安装到 iPhone 13 Pro Max（iOS 27.2），用户完成开发者信任后，确认看到 SnapPort 界面。
+- 根据设备崩溃日志，将旧 AppDelegate 窗口启动迁移至 SceneDelegate，解决 iOS 27 的启动闪退。
+- 本机持续构建目录：`~/Library/Developer/Xcode/DerivedData/SnapPort-device`；构建与启动日志：`~/Library/Logs/SnapPort`。
+- 本机开发团队与 Bundle Identifier 已配置；其他开发者应替换为自己的签名配置。
+- 当前只验证安装和界面启动，未验证真实拍照上传、WebDAV 服务、无照片文件落盘或内存峰值。
+
 ## 真机验收清单
 
 1. **文件审计**：关闭视频，在 Android Studio Device Explorer／Xcode 容器中记录 App files、cache、tmp 及系统相册变化，连续拍照／失败重试／预览；除加密配置外不应出现新增照片文件。需要时监测原生文件写入调用。不能仅凭“相册没有照片”判断合格。
@@ -162,7 +172,7 @@ bunx --no-install react-native bundle --platform ios --dev false \
 
 ## 已知限制与后续工作
 
-- 原生两端未编译通过、未真机验证；恢复构建环境后，首先处理实际原生编译和端到端发现的问题，再做正式发布。
+- iOS 已编译并在真机启动；Android 原生编译仍待完成。两端真实相机、WebDAV 上传和内存／文件审计仍需验收，再做正式发布。
 - 仅实现 WebDAV Basic，尚无 S3／MinIO／R2／OSS／COS／OAuth 网盘、离线持久化、后台可靠上传或 Go 服务。
 - 只提供 JPEG 内存拍照，质量固定最高；没有 RAW／HEIC 拍摄开关、完整厂商夜景模式及同时多摄工作流。
 - WebDAV 无通用缩略图；相册为目录列表和内存原图预览，没有递归索引／分页和通用 EXIF 拍摄时间解析。

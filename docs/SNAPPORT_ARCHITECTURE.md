@@ -1,7 +1,7 @@
 # SnapPort 架构与内存上传链路
 
 SnapPort 在 `apps/simple-camera` 中实现相机到 HTTPS WebDAV 的内存照片上传。
-当前源码已实现完整业务链路；原生编译、真实相机与真实 WebDAV 的端到端验证尚未完成，不能将本次 Mock 测试视为真机验收。
+当前源码已实现完整业务链路；2026-11-17 已完成 iOS 原生编译、真机安装和界面启动。Android 原生编译、真实相机与真实 WebDAV 的端到端验证尚未完成，不能将 Mock 测试或界面启动视为完整真机验收。
 
 ## 组成与职责
 
@@ -17,7 +17,7 @@ SnapPort 在 `apps/simple-camera` 中实现相机到 HTTPS WebDAV 的内存照�
 | `native/` | 独立的应用内 Nitro workspace，接收 ArrayBuffer、HTTPS 请求、进度和安全存储；不修改 VisionCamera SDK |
 | `src/screens/GalleryScreen.tsx` | DAV 目录浏览、刷新、日期排序、只在内存中解码和预览 |
 
-未增加后端、全局状态框架或未实现的 S3 空壳。原 SDK 包源码、发布版本、原生项目标识及 MIT 协议保持原样；应用展示名改为 SnapPort。
+未增加后端、全局状态框架或未实现的 S3 空壳。原 SDK 包源码、发布版本及 MIT 协议保持原样；应用展示名改为 SnapPort，iOS 开发团队与 Bundle Identifier 使用本机可签名配置。
 
 ## 拍照到上传
 
